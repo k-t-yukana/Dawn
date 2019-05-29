@@ -30,6 +30,19 @@ echo "# a user in LDAP instead" >> ansible/group_vars/all
 
 echo -n "grafana_password: " >> ansible/group_vars/all
 python -c "import random, string, json; print(json.dumps(''.join(random.SystemRandom().choice(string.letters + string.digits + string.punctuation) for _ in range(24))));" >> ansible/group_vars/all
+
+# Also portainer
+echo "" >> ansible/group_vars/all
+echo "# Portainer administration password" >> ansible/group_vars/all
+echo -n "portainer_password: " >> ansible/group_vars/all
+python -c "import random, string, json; print(json.dumps(''.join(random.SystemRandom().choice(string.letters + string.digits + string.punctuation) for _ in range(24))));" >> ansible/group_vars/all
+
+# Also teleport
+echo "" >> ansible/group_vars/all
+echo "# Teleport one-time invitation token" >> ansible/group_vars/all
+echo -n "teleport_token: " >> ansible/group_vars/all
+python -c "import random, string, json; print(json.dumps(''.join(random.SystemRandom().choice(string.letters + string.digits) for _ in range(24))));" >> ansible/group_vars/all
+
 echo "[ DONE ]"
 
 echo ""
