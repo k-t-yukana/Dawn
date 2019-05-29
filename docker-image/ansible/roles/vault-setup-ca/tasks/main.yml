@@ -126,6 +126,28 @@
         allow_subdomains: true
         max_ttl: "{{ client_ttl }}"
 
+  - name: "Check for {{ backend_name }} peer role"
+    when: peer_ttl is defined
+    hashivault_read:
+      token: "{{ vault_token }}"
+      secret: "/{{ backend_name }}/pki/roles/peer"
+      key: allowed_domains
+    ignore_errors: true
+    changed_when: false
+    register: vault_peer_role_status
+
+  - name: "Create {{ backend_name }} peer role"
+    when: >
+      vault_peer_role_status
+      and vault_peer_role_status.failed|default(false)|bool
+    hashivault_write:
+      token: "{{ vault_token }}"
+      secret: "/{{ backend_name }}/pki/roles/peer"
+      data:
+        allowed_domains: "{{ local_domain_name }}"
+        allow_subdomains: true
+        max_ttl: "{{ peer_ttl }}"
+
   environment:
     VAULT_ADDR: "{{ vault_addr }}"
   delegate_to: "{{ groups['control'][0] }}"
