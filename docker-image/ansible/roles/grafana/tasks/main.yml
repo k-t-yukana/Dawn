@@ -4,6 +4,7 @@
     dest: /etc/grafana.ini
     mode: 0644
   register: grafana_config_file_status
+  delegate_to: "{{ groups['monitor'][0] }}"
 
 - name: "Create grafana ldap config file"
   template:
@@ -11,6 +12,7 @@
     dest: /etc/grafana-ldap.toml
     mode: 0644
   register: grafana_ldap_file_status
+  delegate_to: "{{ groups['monitor'][0] }}"
 
 - name: "Create grafana stack file"
   template:
@@ -82,7 +84,7 @@
     body:
       name: "elasticsearch"
       type: "elasticsearch"
-      url: "http://{{ group_ipv4.control[0] }}:9200"
+      url: "http://{{ group_ipv4.monitor[0] }}:9200"
       access: "proxy"
       basicAuth: false
       database: "[elasticsearch_metrics-]YYYY.MM.DD"
@@ -100,7 +102,8 @@
       Host: "{{ grafana_host }}"
 
 - name: "Setup a cron to clean up ES metrics periodically"
-  when: groups['control'][0] == inventory_hostname
+  #when: groups['monitor'][0] == inventory_hostname
+  delegate_to: "{{ groups['monitor'][0] }}"
   cron:
     name: "purge ES metrics"
     special_time: "daily"

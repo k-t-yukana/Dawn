@@ -1,7 +1,7 @@
 - name: "Create distribution group"
   set_fact:
     register_ca_control: "{{ groups['control'][0] }}"
-    register_ca_group: "{{ groups['control'] | union(groups['edge']) | union(groups['worker']) }}"
+    register_ca_group: "{{ groups['control'] | union(groups['edge']) | union(groups['worker']) | union(groups['monitor'])}}"
 
 - name: "Fetch remote CA"
   uri:
